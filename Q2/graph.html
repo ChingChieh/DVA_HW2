@@ -22,6 +22,15 @@ circle {
   stroke: black;
   stroke-width: 1.5px;
 }
+circle.level1{
+  fill: #faf3dd;
+}
+circle.level2{
+  fill: #64958f;
+}
+circle.level3{
+  fill: #065c6f;
+}
 
 text {
   fill: #000;
@@ -74,7 +83,7 @@ d3.dsv(",", "board_games.csv", function(d) {
       height = 700;
 
 
-  var rScale = d3.scaleLinear().range([5, 30]);
+  var rScale = d3.scaleLinear().range([5, 35]);
   
   var force = d3.forceSimulation()
       .nodes(d3.values(nodes))
@@ -130,10 +139,20 @@ d3.dsv(",", "board_games.csv", function(d) {
         d.weight = links.filter(function(l) {
             return l.source.index == d.index || l.target.index == d.index
         });
-        // console.log((d.weight).length)
-        //return 5 + ((d.weight).length) * 2;
-        return rScale(d.weight.length);
-      });
+        d.weight = d.weight.length
+        return rScale(d.weight);
+      })
+      .attr("class", function(d) {
+        var level; 
+        if (rScale(d.weight) <= 15){
+            level = 1;
+        } else if (rScale(d.weight) <=25) {
+            level = 2;
+        } else {
+            level = 3;
+        }
+        return "level" + level; 
+        });
 
   // add label
   node.append("text")

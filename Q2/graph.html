@@ -14,7 +14,9 @@ path.link0 {
   stroke: #666;
   stroke-width: 5px;
 }
-
+circle.fixed{
+  fill: red;  
+}
 
 circle {
   fill: #ccc;
@@ -74,7 +76,6 @@ d3.dsv(",", "board_games.csv", function(d) {
   links.forEach(function(link) {
       link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
       link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
-      //### 不知道是不是從這裡開始 ###  
   });
 
   console.log(links)
@@ -115,11 +116,12 @@ d3.dsv(",", "board_games.csv", function(d) {
       .data(force.nodes())
       .enter().append("g")
       .attr("class", "node")
+      .on("dblclick", dblclick)
       .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
-          .on("end", dragended));
-
+          .on("end", dragended))
+      
 
     var scaleArray = [];   // Store the count of neighbor for every node
     links.forEach(function(link) {
@@ -181,9 +183,17 @@ d3.dsv(",", "board_games.csv", function(d) {
           return "translate(" + d.x + "," + d.y + ")"; 
       });
   };
-
+  function dblclick(d) {
+  d3.select(this).classed("fixed", d.fixed = false);
+  d.fx = null;
+  d.fy = null;
+}
   function dragstarted(d) {
       if (!d3.event.active) force.alphaTarget(0.3).restart();
+    //   d3.select(this)
+    //     .classed("fixed", d.fixed = true)
+    //     .style("stroke","red");
+      d.fixed = true;
       d.fx = d.x;
       d.fy = d.y;
   };

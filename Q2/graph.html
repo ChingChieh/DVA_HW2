@@ -25,7 +25,7 @@ circle {
 
 text {
   fill: #000;
-  font: 10px sans-serif;
+  font: 12px sans-serif;
   font-weight: bold;
   pointer-events: none;
 }
@@ -67,6 +67,8 @@ d3.dsv(",", "board_games.csv", function(d) {
       link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
   });
 
+  console.log(links)
+
   var width = 1200,
       height = 700;
 
@@ -91,7 +93,7 @@ d3.dsv(",", "board_games.csv", function(d) {
       .enter()
       .append("path")
       .attr("class", function(d) { 
-        console.log(d.value);
+        console.log(d);
         return "link" + d.value; 
         });
 
@@ -105,18 +107,25 @@ d3.dsv(",", "board_games.csv", function(d) {
           .on("drag", dragged)
           .on("end", dragended));
 
-  // add label
-  node.append("text")
-      .attr("dx", 12)
-      .attr("dy", "-.55em")
-      .text(function(d) {
-        console.log(d["name"])  
-        return d["name"]
-        })  
 
   // add the nodes
   node.append("circle")
-      .attr("r", 5);
+      .attr("r", function(d, i){
+        d.weight = links.filter(function(l) {
+            return l.source.index == d.index || l.target.index == d.index
+        });
+        // console.log((d.weight).length)
+        return 5 + ((d.weight).length) * 2;
+      });
+
+  // add label
+  node.append("text")
+      .attr("dx", 12)
+      .attr("dy", -10)
+      .text(function(d) {
+        // console.log(d["name"])  
+        return d["name"]
+        })  
 
   // add the curvy lines
   function tick() {

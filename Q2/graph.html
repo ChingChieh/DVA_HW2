@@ -15,11 +15,11 @@ path.link0 {
   stroke-width: 5px;
 }
 
-.fixed {
+/* .fixed {
   stroke: red;  
   stroke-width: 0.5px;
   font: 30px sans-serif;
-}
+} */
 
 circle {
   fill: #ccc;
@@ -35,6 +35,10 @@ circle.level2{
 }
 circle.level3{
   fill: #065c6f;
+}
+circle.fixed{
+  stroke: red;
+  stroke-width: 3px;
 }
 
 text {
@@ -188,7 +192,8 @@ d3.dsv(",", "board_games.csv", function(d) {
       });
   };
   function dblclick(d) {
-    d3.select(this).classed("fixed", false)
+    d3.select(this).select("circle")
+      .classed("fixed", false)
     d.fixed = false;
     d.fx = null;
     d.fy = null;
@@ -196,7 +201,8 @@ d3.dsv(",", "board_games.csv", function(d) {
   function dragstarted(d) {
       if (!d3.event.active) force.alphaTarget(0.3).restart();
       
-      d3.select(this).attr("class", "fixed");
+      d3.select(this).select("circle")
+        .classed("fixed", true);
       //classed("fixed", true)
 
       d.fixed = true;

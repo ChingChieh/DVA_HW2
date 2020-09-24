@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<script type="text/javascript" src="../lib/d3.v5.min.js"></script>
+<script type="text/javascript" src="/lib/d3.v5.min.js"></script>
 <style>
 
-path.link {
+path.link1 {
+  fill: none;
+  stroke: rgb(89, 128, 34);
+  stroke-width: 1.5px;
+  stroke-dasharray: 10;
+}
+path.link0 {
   fill: none;
   stroke: #666;
-  stroke-width: 1.5px;
+  stroke-width: 5px;
 }
+
 
 circle {
   fill: #ccc;
@@ -82,7 +89,10 @@ d3.dsv(",", "board_games.csv", function(d) {
       .data(links)
       .enter()
       .append("path")
-      .attr("class", function(d) { return "link " + d.type; });
+      .attr("class", function(d) { 
+        console.log(d.value);
+        return "link" + d.value; 
+        });
 
   // define the nodes
   var node = svg.selectAll(".node")
@@ -93,6 +103,9 @@ d3.dsv(",", "board_games.csv", function(d) {
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended));
+
+  // add label
+  // var label = svg.selectAll()
 
   // add the nodes
   node.append("circle")

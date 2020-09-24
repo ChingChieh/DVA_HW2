@@ -26,6 +26,7 @@ circle {
 text {
   fill: #000;
   font: 10px sans-serif;
+  font-weight: bold;
   pointer-events: none;
 }
 
@@ -105,7 +106,13 @@ d3.dsv(",", "board_games.csv", function(d) {
           .on("end", dragended));
 
   // add label
-  // var label = svg.selectAll()
+  node.append("text")
+      .attr("dx", 12)
+      .attr("dy", "-.55em")
+      .text(function(d) {
+        console.log(d["name"])  
+        return d["name"]
+        })  
 
   // add the nodes
   node.append("circle")

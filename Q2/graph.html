@@ -14,8 +14,10 @@ path.link0 {
   stroke: #666;
   stroke-width: 5px;
 }
-circle.fixed{
-  fill: red;  
+
+.fixed{
+  stroke: red;  
+  fill: #fff;
 }
 
 circle {
@@ -184,15 +186,16 @@ d3.dsv(",", "board_games.csv", function(d) {
       });
   };
   function dblclick(d) {
-  d3.select(this).classed("fixed", d.fixed = false);
-  d.fx = null;
-  d.fy = null;
-}
+    d3.select(this).classed("fixed", false)
+    d.fixed = false;
+    d.fx = null;
+    d.fy = null;
+  }
   function dragstarted(d) {
       if (!d3.event.active) force.alphaTarget(0.3).restart();
-    //   d3.select(this)
-    //     .classed("fixed", d.fixed = true)
-    //     .style("stroke","red");
+      
+      d3.select(this).classed("fixed", true)
+
       d.fixed = true;
       d.fx = d.x;
       d.fy = d.y;

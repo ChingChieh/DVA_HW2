@@ -2,6 +2,14 @@
 <meta charset="utf-8">
 
 <style type="text/css">
+    .line {
+        fill: none;
+        stroke: #ffab00;
+        stroke-width: 3;
+    }
+    text {  /* This will also set the text on axis */
+        font: 16px sans-serif;
+    }
 
 
 </style>
@@ -11,6 +19,11 @@
 
 <!-- Load in the d3 library -->
 <script type="text/javascript" src="/lib/d3.v5.min.js"></script>
+<script type="text/javascript" src="/lib/d3-geo-projection.v2.min.js"></script>
+<script type="text/javascript" src="/lib/d3-legend.min.js"></script>
+<script type="text/javascript" src="/lib/d3-tip.min.js"></script>
+<script type="text/javascript" src="/lib/topojson.v2.min.js"></script>
+
 <script>
 var padding = {top: 50, right: 50, bottom: 50, left:50};
 var width = 1200;
@@ -30,7 +43,10 @@ var svg = d3.select("body")
             .attr("width", width)
             .attr("height", height)
 
-            
+var color = d3.scaleOrdinal(d3.schemeCategory10);
+var game = ['Catan', 'Dominion', 'Codenames', 'Terraforming Mars', 'Gloomhaven', 'Magic: The Gathering', 'Dixit', 'Monopoly', 'a', 'b']
+color.domain(game)
+
 d3.dsv(",", "boardgame_ratings.csv", function(d){
     return{
         date: parseTime(d.date),
@@ -72,10 +88,74 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
        .attr("transform", "translate(" + 2 * padding.left + ",0)")
        .call(yAxis);
 
-    // 
- 
+    // Draw lines
+    var catanLine = d3.line()
+                    .x(function(d) { return xScale(d.date); }) // set the x values for the line generator
+                    .y(function(d) { return yScale(d.catanCount); }) // set the y values for the line generator 
+    var dominionLine = d3.line()
+                    .x(function(d) { return xScale(d.date); }) 
+                    .y(function(d) { return yScale(d.dominionCount); }) 
+    var codenamesLine = d3.line()
+                    .x(function(d) { return xScale(d.date); }) 
+                    .y(function(d) { return yScale(d.codenamesCount); })
+    var terraformingMarsLine = d3.line()
+                    .x(function(d) { return xScale(d.date); }) 
+                    .y(function(d) { return yScale(d.terraformingMarsCount); })
+    var gloomhavenLine = d3.line()
+                    .x(function(d) { return xScale(d.date); }) 
+                    .y(function(d) { return yScale(d.gloomhavenCount); })
+    var magicTheGatheringLine = d3.line()
+                    .x(function(d) { return xScale(d.date); }) 
+                    .y(function(d) { return yScale(d.magicTheGatheringCount); })
+    var dixitLine = d3.line()
+                    .x(function(d) { return xScale(d.date); }) 
+                    .y(function(d) { return yScale(d.dixitCount); })
+    var monopolyLine = d3.line()
+                    .x(function(d) { return xScale(d.date); }) 
+                    .y(function(d) { return yScale(d.monopolyCount); })
+
+    dataLen = data.length 
+    /* Catan */
+    svg.append("path")
+        .datum(data) // Binds data to the line 
+        .attr("class", "line") // Assign a class for styling 
+        .attr("d", catanLine) // Calls the line generator
+        .style("stroke", function(d){
+            return color("Catan");
+        }); 
+
+    svg.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 2 + 10) + "," + yScale(data[dataLen - 1].catanCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Catan");
+        })
+    .text("Catan");
+
+    /* Dominion */
+    svg.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", dominionLine) 
+    .style("stroke", function(d){
+        return color("Dominion");
+    }); 
+
+    svg.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 2 + 10) + "," + yScale(data[dataLen - 1].dominionCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Dominion");
+        })
+    .text("Dominion");
+
+
+
 
 }).catch(function(error) {
     console.log(error);
 });
 </script>
+

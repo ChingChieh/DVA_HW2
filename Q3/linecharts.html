@@ -12,20 +12,24 @@
 <!-- Load in the d3 library -->
 <script type="text/javascript" src="/lib/d3.v5.min.js"></script>
 <script>
-var margin = {top: 50, right: 50, bottom: 50, left:50};
-var width = 900;
-var height = 600;
-var xScale = d3.scaleTime().range([0, width]);
+var padding = {top: 50, right: 50, bottom: 50, left:50};
+var width = 1200;
+var height = 800;
 var parseTime = d3.timeParse("%Y-%m-%d");
+var xScale = d3.scaleTime().range([padding.left * 2, width - padding.right * 2]);
+var yScale = d3.scaleLinear().range([height - padding.bottom, padding.top]);
 var xAxis = d3.axisBottom()
-                .ticks(10)
-                .tickFormat(d3.timeFormat("%b %y"))
-                .scale(xScale);
+              .tickFormat(d3.timeFormat("%b %y"))
+              .scale(xScale);
+
+var yAxis = d3.axisLeft()
+              .scale(yScale);
 
 var svg = d3.select("body")
             .append("svg")
             .attr("width", width)
-            .attr("height", height);
+            .attr("height", height)
+
             
 d3.dsv(",", "boardgame_ratings.csv", function(d){
     return{
@@ -54,14 +58,21 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         d3.min(data, function(d) { return d.date; }),
         d3.max(data, function(d) { return d.date; })
     ]);
+    yScale.domain([0, 10000]);
+
+
     console.log(xScale.range())
     console.log(xScale.domain())
     
     svg.append("g")
        .attr("class", "axis")
-       .attr("transform", "translate(50," + (height - 30)+ ")")
+       .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
        .call(xAxis);
-    
+
+    svg.append("g")
+       .attr("class", "axis")
+       .attr("transform", "translate(" + 2 * padding.left + ",0)")
+       .call(yAxis);
  
 
 }).catch(function(error) {

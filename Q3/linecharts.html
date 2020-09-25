@@ -8,7 +8,7 @@
         stroke-width: 3;
     }
     text {  /* This will also set the text on axis */
-        font: 16px sans-serif;
+        font: 12px sans-serif;
     }
 
 
@@ -29,7 +29,7 @@ var padding = {top: 50, right: 50, bottom: 50, left:50};
 var width = 1200;
 var height = 800;
 var parseTime = d3.timeParse("%Y-%m-%d");
-var xScale = d3.scaleTime().range([padding.left * 2, width - padding.right * 2]);
+var xScale = d3.scaleTime().range([padding.left * 2, width - padding.right * 4]);
 var yScale = d3.scaleLinear().range([height - padding.bottom, padding.top]);
 var xAxis = d3.axisBottom()
               .tickFormat(d3.timeFormat("%b %y"))
@@ -125,7 +125,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         }); 
 
     svg.append("text")
-    .attr("transform", "translate(" + (width - padding.right * 2 + 10) + "," + yScale(data[dataLen - 1].catanCount) + ")")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].catanCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
     .style("fill", function(d){
@@ -143,13 +143,140 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
     }); 
 
     svg.append("text")
-    .attr("transform", "translate(" + (width - padding.right * 2 + 10) + "," + yScale(data[dataLen - 1].dominionCount) + ")")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].dominionCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
     .style("fill", function(d){
             return color("Dominion");
         })
     .text("Dominion");
+
+    /* codenames */
+    svg.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", codenamesLine) 
+    .style("stroke", function(d){
+        return color("Codenames");
+    }); 
+
+    svg.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].codenamesCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Codenames");
+        })
+    .text("Codenames");
+
+    /* terraforming Mars */
+    svg.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", terraformingMarsLine) 
+    .style("stroke", function(d){
+        return color("Terraforming Mars");
+    }); 
+
+    svg.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].terraformingMarsCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Terraforming Mars");
+        })
+    .text("Terraforming Mars");
+
+    /* terraforming Mars */
+    svg.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", terraformingMarsLine) 
+    .style("stroke", function(d){
+        return color("Terraforming Mars");
+    }); 
+
+    svg.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].terraformingMarsCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Terraforming Mars");
+        })
+    .text("Terraforming Mars");
+
+    /* Gloomhaven */
+    svg.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", gloomhavenLine) 
+    .style("stroke", function(d){
+        return color("Gloomhaven");
+    }); 
+
+    svg.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].gloomhavenCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Gloomhaven");
+        })
+    .text("Gloomhaven");
+
+    /* Magic: The Gathering */
+    svg.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", magicTheGatheringLine) 
+    .style("stroke", function(d){
+        return color("Magic: The Gathering");
+    }); 
+
+    svg.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].magicTheGatheringCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Magic: The Gathering");
+        })
+    .text("Magic: The Gathering");
+
+    /* Dixit */
+    svg.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", dixitLine) 
+    .style("stroke", function(d){
+        return color("Dixit");
+    }); 
+
+    svg.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].dixitCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Dixit");
+        })
+    .text("Dixit");
+
+    /* Monopoly */
+    svg.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", monopolyLine) 
+    .style("stroke", function(d){
+        return color("Monopoly");
+    }); 
+
+    svg.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].monopolyCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Monopoly");
+        })
+    .text("Monopoly");
+
 
 
 

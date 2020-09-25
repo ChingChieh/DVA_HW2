@@ -10,6 +10,12 @@
     text {  /* This will also set the text on axis */
         font: 12px sans-serif;
     }
+    text.label {  /* This will also set the text on axis */
+        font: 18px sans-serif;
+    }
+    text.title {  /* This will also set the text on axis */
+        font: 24px sans-serif;
+    }
 
 
 </style>
@@ -28,6 +34,7 @@
 var padding = {top: 50, right: 50, bottom: 50, left:50};
 var width = 1200;
 var height = 800;
+var totalHeight = height * 4;
 var parseTime = d3.timeParse("%Y-%m-%d");
 var xScale = d3.scaleTime().range([padding.left * 2, width - padding.right * 4]);
 var yScale = d3.scaleLinear().range([height - padding.bottom, padding.top]);
@@ -41,7 +48,7 @@ var yAxis = d3.axisLeft()
 var svg = d3.select("body")
             .append("svg")
             .attr("width", width)
-            .attr("height", height)
+            .attr("height", totalHeight)
 
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 var game = ['Catan', 'Dominion', 'Codenames', 'Terraforming Mars', 'Gloomhaven', 'Magic: The Gathering', 'Dixit', 'Monopoly', 'a', 'b']
@@ -87,8 +94,27 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
        .attr("class", "axis")
        .attr("transform", "translate(" + 2 * padding.left + ",0)")
        .call(yAxis);
+    
+    svg.append("text")             
+      .attr("transform", "translate(" + (width/2 - 2 * padding.right) + "," + (height) + ")")
+      .attr("class", "label")
+      .text("Month");
 
-    // Draw lines
+    svg.append("text")             
+      .attr("transform", "rotate(-90)")
+      .attr("y", padding.left - 10)
+      .attr("x",0 - (height / 2) - 50)  
+      .attr("class", "label")
+      .text("Num of Ratings");
+   
+    svg.append("text")
+        .attr("transform", "translate(100,0)")
+        .attr("x", (width / 2) - 6 * padding.right)
+        .attr("y", padding.top)
+        .attr("class", "title")
+        .text("Number of Ratings 2016-2020") 
+    
+        // Draw lines
     var catanLine = d3.line()
                     .x(function(d) { return xScale(d.date); }) // set the x values for the line generator
                     .y(function(d) { return yScale(d.catanCount); }) // set the y values for the line generator 

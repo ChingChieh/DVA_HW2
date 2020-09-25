@@ -2,30 +2,7 @@
 <meta charset="utf-8">
 
 <style type="text/css">
-/* 13. Basic Styling with CSS */
 
-/* Style the lines by removing the fill and applying a stroke */
-.line {
-    fill: none;
-    stroke: #ffab00;
-    stroke-width: 3;
-}
-  
-.overlay {
-  fill: none;
-  pointer-events: all;
-}
-
-/* Style the dots by assigning a fill and stroke */
-.dot {
-    fill: #ffab00;
-    stroke: #fff;
-}
-  
-  .focus circle {
-  fill: none;
-  stroke: steelblue;
-}
 
 </style>
 <!-- Body tag is where we will append our SVG and SVG objects-->
@@ -35,8 +12,21 @@
 <!-- Load in the d3 library -->
 <script type="text/javascript" src="/lib/d3.v5.min.js"></script>
 <script>
-
+var margin = {top: 50, right: 50, bottom: 50, left:50};
+var width = 900;
+var height = 600;
+var xScale = d3.scaleTime().range([0, width]);
 var parseTime = d3.timeParse("%Y-%m-%d");
+var xAxis = d3.axisBottom()
+                .ticks(10)
+                .tickFormat(d3.timeFormat("%b %y"))
+                .scale(xScale);
+
+var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+            
 d3.dsv(",", "boardgame_ratings.csv", function(d){
     return{
         date: parseTime(d.date),
@@ -60,28 +50,16 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
 }).then(function(data){
     console.log(data)
     
-    var margin = {top: 50, right: 50, bottom: 50, left:50};
-    var width = window.innerWidth - margin.right - margin.left;
-    var height = window.innerHeight - margin.top - margin.bottom;
-    var xScale = d3.scaleTime().range([0, width]);
-    
-    var svg = d3.select("body")
-                .append("svg")
-                .append("g")
-                .attr("transform", "translate (" + margin.left + "," + margin.top + ")");
-    
     xScale.domain([
         d3.min(data, function(d) { return d.date; }),
         d3.max(data, function(d) { return d.date; })
     ]);
-
-    var xAxis = d3.axisBottom()
-                .tickFormat(d3.timeFormat("%b %y"))
-                .scale(xScale);
-
+    console.log(xScale.range())
+    console.log(xScale.domain())
+    
     svg.append("g")
        .attr("class", "axis")
-       .attr("transform", "translate(0," + height + ")")
+       .attr("transform", "translate(50," + (height - 30)+ ")")
        .call(xAxis);
     
  

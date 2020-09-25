@@ -54,15 +54,13 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
 }).then(function(data){
     console.log(data)
     
+    // Setting x-axis and y-axis
     xScale.domain([
         d3.min(data, function(d) { return d.date; }),
         d3.max(data, function(d) { return d.date; })
     ]);
-    yScale.domain([0, 10000]);
-
-
-    console.log(xScale.range())
-    console.log(xScale.domain())
+    var yMax = d3.max(data, function(d) { return d.catanCount; });
+    yScale.domain([0, yMax]);
     
     svg.append("g")
        .attr("class", "axis")
@@ -73,6 +71,8 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
        .attr("class", "axis")
        .attr("transform", "translate(" + 2 * padding.left + ",0)")
        .call(yAxis);
+
+    // 
  
 
 }).catch(function(error) {

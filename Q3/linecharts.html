@@ -16,12 +16,18 @@
     text.title {  /* This will also set the text on axis */
         font: 24px sans-serif;
     }
-
+    @media print {
+    .pagebreak { page-break-before: always; } /* page-break-after works, as well */
+    }
 
 </style>
 <!-- Body tag is where we will append our SVG and SVG objects-->
 <body>
+
 </body>
+<div id="container1"></div>
+<div class="pagebreak"> </div>
+<div id="container2"></div>
 
 <!-- Load in the d3 library -->
 <script type="text/javascript" src="/lib/d3.v5.min.js"></script>
@@ -40,15 +46,16 @@ var xScale = d3.scaleTime().range([padding.left * 2, width - padding.right * 4])
 var yScale = d3.scaleLinear().range([height - padding.bottom, padding.top]);
 var xAxis = d3.axisBottom()
               .tickFormat(d3.timeFormat("%b %y"))
+              .ticks(d3.timeMonth.every(3))
               .scale(xScale);
 
 var yAxis = d3.axisLeft()
               .scale(yScale);
 
-var svg = d3.select("body")
+var svg = d3.select("#container1")
             .append("svg")
             .attr("width", width)
-            .attr("height", totalHeight)
+            .attr("height", height)
 
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 var game = ['Catan', 'Dominion', 'Codenames', 'Terraforming Mars', 'Gloomhaven', 'Magic: The Gathering', 'Dixit', 'Monopoly', 'a', 'b']
@@ -303,12 +310,56 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         })
     .text("Monopoly");
 
+    /*================================================= Q3b ========================================================*/    
+    var svg2 = d3.select("#container2")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
 
+    svg2.append("g")
+       .attr("class", "axis")
+       .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
+       .call(xAxis);
+       
+       svg2.append("g")
+       .attr("class", "axis")
+       .attr("transform", "translate(" + 2 * padding.left + ",0)")
+       .call(yAxis);
+    
+    svg2.append("text")             
+      .attr("transform", "translate(" + (width/2 - 2 * padding.right) + "," + (height) + ")")
+      .attr("class", "label")
+      .text("Month");
 
+    svg2.append("text")             
+      .attr("transform", "rotate(-90)")
+      .attr("y", padding.left - 10)
+      .attr("x",0 - (height / 2) - 50)  
+      .attr("class", "label")
+      .text("Num of Ratings");
+   
+    svg2.append("text")
+        .attr("transform", "translate(100,0)")
+        .attr("x", (width / 2) - 6 * padding.right)
+        .attr("y", padding.top)
+        .attr("class", "title")
+        .text("Number of Ratings 2016-2020 with Rankings") 
+
+    // height = height + tmp
+    // svg.append("g")
+    //    .attr("class", "axis")
+    //    .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
+    //    .call(xAxis);
+
+    // height = height + tmp
+    // svg.append("g")
+    //    .attr("class", "axis")
+    //    .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
+    //    .call(xAxis);
+    
 
 
 }).catch(function(error) {
     console.log(error);
 });
 </script>
-

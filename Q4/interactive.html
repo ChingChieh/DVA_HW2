@@ -2,14 +2,20 @@
 <head>
   <title>Games Rating: 2015 - 2019</title>
   <meta charset="utf-8">
+  <style type="text/css">
+    text.label{
+      font-size: 24px;
+    }
+    text.title{
+      font-size: 30px;
+    }
+  </style>
   <script type="text/javascript" src="../lib/d3.v5.min.js"></script>
   <script type="text/javascript" src="../lib/d3-dsv.min.js"></script>
 </head>
 
 <body>
-
 <div id="container1"></div>
-
 <script>
   d3.dsv(",", "average-rating.csv", function(d){
     return {
@@ -48,16 +54,20 @@
     console.log(years);
 
     // 3. start drawing line chart
+    // 3.1 set basic svg size
     var padding = {top: 100, right: 100, bottom: 100, left: 100};
     var width = 1200;
     var height = 800;
-    var svg1 = d3.select("#contain1")
+    var svg1 = d3.select("#container1")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height)
+
+    // 3.2 set xScale and yScale
     var xScale = d3.scaleLinear()
-                  .range(padding.left, width - padding.right)
+                  .range([padding.left, width - padding.right])
                   .domain([xMin, xMax]);              
+
     var yMin = Infinity,
         yMax = 0;
      
@@ -74,14 +84,45 @@
       }
     }
     var yScale = d3.scaleLinear()
-                  .range(height - padding.top, padding.bottom)
+                  .range([height - padding.top, padding.bottom])
                   .domain([yMin, yMax]);
 
-    console.log(xScale.domain())
-    console.log(years)
-    console.log(yScale.domain())
+    var xAxis = d3.axisBottom()
+                  .scale(xScale);
 
+    var yAxis = d3.axisLeft()
+                  .scale(yScale);
+    // 3.3 visualize x,y-axis
+    svg1.append("g")
+       .attr("class", "axis")
+       .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
+       .call(xAxis);
 
+    svg1.append("g")
+       .attr("class", "axis")
+       .attr("transform", "translate(" + 1 * padding.left + ",0)")
+       .call(yAxis);
+
+    // 3.4 and text on axis and title
+    svg1.append("text")             
+      .attr("transform", "translate(" + (width/2) + "," + (height - padding.bottom / 2) + ")")
+      .attr("class", "label")
+      .attr("text-anchor", "middle")
+      .text("Rating");
+
+    svg1.append("text")             
+      .attr("transform", "rotate(-90)")
+      .attr("y", padding.left / 2)
+      .attr("x",0 - (height / 2) - 50)  
+      .attr("class", "label")
+      .text("Count");
+    
+    svg1.append("text")
+        .attr("x", (width / 2))
+        .attr("y", padding.top - 10)
+        .attr("class", "title")
+        .attr("text-anchor", "middle")
+        .text("Number of Ratings 2016-2020") 
 
   }).catch(function(error) {
     console.log(error);

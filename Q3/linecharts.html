@@ -221,24 +221,6 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         })
     .text("Terraforming Mars");
 
-    /* terraforming Mars */
-    svg.append("path")
-    .datum(data)  
-    .attr("class", "line")  
-    .attr("d", terraformingMarsLine) 
-    .style("stroke", function(d){
-        return color("Terraforming Mars");
-    }); 
-
-    svg.append("text")
-    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].terraformingMarsCount) + ")")
-    .attr("dy", ".35em")
-    .attr("text-anchor", "start")
-    .style("fill", function(d){
-            return color("Terraforming Mars");
-        })
-    .text("Terraforming Mars");
-
     /* Gloomhaven */
     svg.append("path")
     .datum(data)  
@@ -346,8 +328,80 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         .attr("y", padding.top)
         .attr("class", "title")
         .text("Number of Ratings 2016-2020 with Rankings")
-    
-    // Start drawing
+    // draw line without nodes (think about whether to add different class)    
+    /* Dominion */
+    svg2.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", dominionLine) 
+    .style("stroke", function(d){
+        return color("Dominion");
+    }); 
+
+    svg2.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].dominionCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Dominion");
+        })
+    .text("Dominion");
+
+    /* Magic: The Gathering */
+    svg2.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", magicTheGatheringLine) 
+    .style("stroke", function(d){
+        return color("Magic: The Gathering");
+    }); 
+
+    svg2.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].magicTheGatheringCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Magic: The Gathering");
+        })
+    .text("Magic: The Gathering");
+
+    /* Dixit */
+    svg2.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", dixitLine) 
+    .style("stroke", function(d){
+        return color("Dixit");
+    }); 
+
+    svg2.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].dixitCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Dixit");
+        })
+    .text("Dixit");
+
+     /* Monopoly */
+     svg2.append("path")
+    .datum(data)  
+    .attr("class", "line")  
+    .attr("d", monopolyLine) 
+    .style("stroke", function(d){
+        return color("Monopoly");
+    }); 
+
+    svg2.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].monopolyCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Monopoly");
+        })
+    .text("Monopoly");
+    // Start drawing lines with nodes
+    var circleRadius = 13;
     svg2.append("path")
         .datum(data) // Binds data to the line 
         .attr("class", "line catan") // Assign a class for styling 
@@ -376,14 +430,14 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         .attr("cy", function(d) { return yScale(d.catanCount) })
         .attr("r", function(d, i){
             if (i % 3 == 2){
-                return 13;
+                return circleRadius;
             } else {
                 return 0;
             }
         })
     
     svg2.selectAll("path.line.catan")
-        .data(data)
+        .data(data)   // Why can't use filter ........................
         .enter()
         .append("text")
         .attr("x", function(d) { return xScale(d.date) })
@@ -391,7 +445,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         .attr("text-anchor", "middle")
         .style("fill", "white")
         .text(function(d, i) {
-			if (i % 3 == 2){
+            if (i % 3 == 2){
                 return d.catanRank;
             } else {
                 return "";
@@ -427,11 +481,127 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         .attr("cy", function(d) { return yScale(d.codenamesCount) })
         .attr("r", function(d, i){
             if (i % 3 == 2){
-                return 13;
+                return circleRadius;
             } else {
                 return 0;
             }
         })
+    svg2.selectAll("path.line.code")
+        .data(data)   // Why can't use filter ........................
+        .enter()
+        .append("text")
+        .attr("x", function(d) { return xScale(d.date) })
+        .attr("y", function(d) { return yScale(d.codenamesCount) + 3 })
+        .attr("text-anchor", "middle")
+        .style("fill", "white")
+        .text(function(d, i) {
+            if (i % 3 == 2){
+                return d.codenamesRank;
+            } else {
+                return "";
+            }
+        })    
+        
+    /* Gloomhaven */
+    svg2.append("path")
+    .datum(data)  
+    .attr("class", "line gloom")  
+    .attr("d", gloomhavenLine) 
+    .style("stroke", function(d){
+        return color("Gloomhaven");
+    }); 
+
+    svg2.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].gloomhavenCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Gloomhaven");
+        })
+    .text("Gloomhaven");
+    
+    svg2.selectAll("path.line.gloom")
+        .data(data)
+        .enter()
+        .append("circle") 
+        .attr("fill",function(d){
+            return color("Gloomhaven");
+        }) 
+        .attr("cx", function(d) { return xScale(d.date) })
+        .attr("cy", function(d) { return yScale(d.gloomhavenCount) })
+        .attr("r", function(d, i){
+            if (i % 3 == 2){
+                return circleRadius;
+            } else {
+                return 0;
+            }
+        })
+    svg2.selectAll("path.line.gloom")
+        .data(data)   
+        .enter()
+        .append("text")
+        .attr("x", function(d) { return xScale(d.date) })
+        .attr("y", function(d) { return yScale(d.gloomhavenCount) + 3 })
+        .attr("text-anchor", "middle")
+        .style("fill", "white")
+        .text(function(d, i) {
+            if (i % 3 == 2){
+                return d.gloomhavenRank;
+            } else {
+                return "";
+            }
+        })        
+        
+    /* Terraforming Mars */
+    svg2.append("path")
+    .datum(data)  
+    .attr("class", "line mars")  
+    .attr("d", terraformingMarsLine) 
+    .style("stroke", function(d){
+        return color("Terraforming Mars");
+    }); 
+
+    svg2.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].terraformingMarsCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Terraforming Mars");
+        })
+    .text("Terraforming Mars");
+    
+    svg2.selectAll("path.line.mars")
+        .data(data)
+        .enter()
+        .append("circle") 
+        .attr("fill",function(d){
+            return color("Terraforming Mars");
+        }) 
+        .attr("cx", function(d) { return xScale(d.date) })
+        .attr("cy", function(d) { return yScale(d.terraformingMarsCount) })
+        .attr("r", function(d, i){
+            if (i % 3 == 2){
+                return circleRadius;
+            } else {
+                return 0;
+            }
+        })
+    svg2.selectAll("path.line.mars")
+        .data(data)   
+        .enter()
+        .append("text")
+        .attr("x", function(d) { return xScale(d.date) })
+        .attr("y", function(d) { return yScale(d.terraformingMarsCount) + 3 })
+        .attr("text-anchor", "middle")
+        .style("fill", "white")
+        .text(function(d, i) {
+            if (i % 3 == 2){
+                return d.terraformingMarsRank;
+            } else {
+                return "";
+            }
+		})        
+
 
 }).catch(function(error) {
     console.log(error);

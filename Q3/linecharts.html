@@ -600,8 +600,26 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
             } else {
                 return "";
             }
-		})        
+        })   
+    svg2.append("circle")
+        .attr("cx", width - 3 * padding.right)
+        .attr("cy", height - 3 * padding.bottom)
+        .attr("r", 20)
+        .attr("fill", "black")
 
+    svg2.append("text")
+        .attr("x", width - 3 * padding.right)
+        .attr("y", height - 3 * padding.bottom + 3)
+        .text("rank")
+        .attr("text-anchor", "middle")
+        .style("fill", "white")
+
+    svg2.append("text")
+        .attr("x", width - 3 * padding.right)
+        .attr("y", height - 2 * padding.bottom + 3)
+        .text("BoardGameGeek Rank")
+        .attr("text-anchor", "middle")
+        .style("fill", "black")
 
 }).catch(function(error) {
     console.log(error);

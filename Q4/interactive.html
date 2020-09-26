@@ -8,9 +8,84 @@
 
 <body>
 
-<div id="container"></div>
+<div id="container1"></div>
 
 <script>
+  d3.dsv(",", "average-rating.csv", function(d){
+    return {
+      name: d.name,
+      year: +d.year,
+      avgRating: +d.average_rating,
+      floorRate: Math.floor(+d.average_rating),
+      userRated: +d.users_rated
+    }
+  }).then(function(data){
+    console.log(data);
+    // 1. create years object to store count of each rank for years range from 2015 to 2019
+    var years = { 
+      "2015":{},
+      "2016":{},
+      "2017":{},
+      "2018":{},
+      "2019":{}
+    }; 
+    var i, j;
+    var xMin = d3.min(data, function(d){ return d.floorRate;}),
+        xMax = d3.max(data, function(d){ return d.floorRate;});
+    
+    for(i = 2015; i < 2020; i++){
+      for(j = xMin; j < xMax + 1; j++){
+        years[i.toString()][j.toString()] = 0;
+      }
+    }
+
+    // 2. store count in years object
+    data.forEach(function(d){
+      if (d.year >= 2015 && d.year <= 2019){
+        years[d.year.toString()][d.floorRate.toString()] += 1;
+      }
+    });
+    console.log(years);
+
+    // 3. start drawing line chart
+    var padding = {top: 100, right: 100, bottom: 100, left: 100};
+    var width = 1200;
+    var height = 800;
+    var svg1 = d3.select("#contain1")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+    var xScale = d3.scaleLinear()
+                  .range(padding.left, width - padding.right)
+                  .domain([xMin, xMax]);              
+    var yMin = Infinity,
+        yMax = 0;
+     
+    // Find the domain for yScale
+    for(i = 2015; i < 2020; i++){
+      for(j = xMin; j < xMax + 1; j++){
+        let count = years[i.toString()][j.toString()];
+        if(count < yMin){
+          yMin = count;
+        }
+        if(count > yMax){
+          yMax = count;
+        }
+      }
+    }
+    var yScale = d3.scaleLinear()
+                  .range(height - padding.top, padding.bottom)
+                  .domain([yMin, yMax]);
+
+    console.log(xScale.domain())
+    console.log(years)
+    console.log(yScale.domain())
+
+
+
+  }).catch(function(error) {
+    console.log(error);
+});
 
 </script>
 

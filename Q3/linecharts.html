@@ -31,6 +31,8 @@
 <div id="container2"></div>
 <div class="pagebreak"> </div>
 <div id="container3"></div>
+<div class="pagebreak"> </div>
+<div id="container4"></div>
 
 <!-- Load in the d3 library -->
 <script type="text/javascript" src="/lib/d3.v5.min.js"></script>
@@ -964,35 +966,35 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
     yAxis = d3.axisLeft()
               .scale(yScale);
 
-    var svg3 = d3.select("#container3")
+    var svg4 = d3.select("#container4")
             .append("svg")
             .attr("width", width)
             .attr("height", height)
 
     // Deal with axis
-    svg3.append("g")
+    svg4.append("g")
        .attr("class", "axis")
        .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
        .call(xAxis);    
 
-    svg3.append("g")
+    svg4.append("g")
        .attr("class", "axis")
        .attr("transform", "translate(" + 2 * padding.left + ",0)")
        .call(yAxis);
     
-    svg3.append("text")             
+    svg4.append("text")             
       .attr("transform", "translate(" + (width/2 - 2 * padding.right) + "," + (height - 10) + ")")
       .attr("class", "label")
       .text("Month");
 
-    svg3.append("text")             
+    svg4.append("text")             
       .attr("transform", "rotate(-90)")
       .attr("y", padding.left - 10)
       .attr("x",0 - (height / 2) - 50)  
       .attr("class", "label")
       .text("Num of Ratings");
    
-    svg3.append("text")
+    svg4.append("text")
         .attr("transform", "translate(100,0)")
         .attr("x", (width / 2) - 8 * padding.right)
         .attr("y", padding.top)
@@ -1000,7 +1002,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         .text("Number of Ratings 2016-2020 (Log Scale)")
     // draw line without nodes (think about whether to add different class)    
     /* Dominion */
-    svg3.append("path")
+    svg4.append("path")
     .datum(data)  
     .attr("class", "line")  
     .attr("d", dominionLine) 
@@ -1008,7 +1010,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         return color("Dominion");
     }); 
 
-    svg3.append("text")
+    svg4.append("text")
     .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].dominionCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
@@ -1018,7 +1020,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
     .text("Dominion");
 
     /* Magic: The Gathering */
-    svg3.append("path")
+    svg4.append("path")
     .datum(data)  
     .attr("class", "line")  
     .attr("d", magicTheGatheringLine) 
@@ -1026,7 +1028,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         return color("Magic: The Gathering");
     }); 
 
-    svg3.append("text")
+    svg4.append("text")
     .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].magicTheGatheringCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
@@ -1036,7 +1038,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
     .text("Magic: The Gathering");
 
     /* Dixit */
-    svg3.append("path")
+    svg4.append("path")
     .datum(data)  
     .attr("class", "line")  
     .attr("d", dixitLine) 
@@ -1044,7 +1046,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         return color("Dixit");
     }); 
 
-    svg3.append("text")
+    svg4.append("text")
     .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].dixitCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
@@ -1054,7 +1056,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
     .text("Dixit");
 
      /* Monopoly */
-    svg3.append("path")
+    svg4.append("path")
     .datum(data)  
     .attr("class", "line")  
     .attr("d", monopolyLine) 
@@ -1062,7 +1064,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         return color("Monopoly");
     }); 
 
-    svg3.append("text")
+    svg4.append("text")
     .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].monopolyCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
@@ -1072,7 +1074,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
     .text("Monopoly");
     // Start drawing lines with nodes
     var circleRadius = 13;
-    svg3.append("path")
+    svg4.append("path")
         .datum(data) // Binds data to the line 
         .attr("class", "line catan") // Assign a class for styling 
         .attr("d", catanLine) // Calls the line generator
@@ -1080,7 +1082,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
             return color("Catan");
         }); 
 
-    svg3.append("text")
+    svg4.append("text")
     .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].catanCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
@@ -1089,7 +1091,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         })
     .text("Catan");
 
-    svg3.selectAll("path.line.catan")
+    svg4.selectAll("path.line.catan")
         .data(data)
         .enter()
         .append("circle") 
@@ -1106,7 +1108,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
             }
         })
     
-    svg3.selectAll("path.line.catan")
+    svg4.selectAll("path.line.catan")
         .data(data)   // Why can't use filter ........................
         .enter()
         .append("text")
@@ -1123,7 +1125,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
 		})    
 
     /* codenames */
-    svg3.append("path")
+    svg4.append("path")
     .datum(data)  
     .attr("class", "line code")  
     .attr("d", codenamesLine) 
@@ -1131,7 +1133,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         return color("Codenames");
     }); 
 
-    svg3.append("text")
+    svg4.append("text")
     .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].codenamesCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
@@ -1140,7 +1142,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         })
     .text("Codenames");
     
-    svg3.selectAll("path.line.code")
+    svg4.selectAll("path.line.code")
         .data(data)
         .enter()
         .append("circle") 
@@ -1156,7 +1158,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
                 return 0;
             }
         })
-    svg3.selectAll("path.line.code")
+    svg4.selectAll("path.line.code")
         .data(data)   // Why can't use filter ........................
         .enter()
         .append("text")
@@ -1173,7 +1175,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         })    
         
     /* Gloomhaven */
-    svg3.append("path")
+    svg4.append("path")
     .datum(data)  
     .attr("class", "line gloom")  
     .attr("d", gloomhavenLine) 
@@ -1181,7 +1183,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         return color("Gloomhaven");
     }); 
 
-    svg3.append("text")
+    svg4.append("text")
     .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].gloomhavenCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
@@ -1190,7 +1192,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         })
     .text("Gloomhaven");
     
-    svg3.selectAll("path.line.gloom")
+    svg4.selectAll("path.line.gloom")
         .data(data)
         .enter()
         .append("circle") 
@@ -1206,7 +1208,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
                 return 0;
             }
         })
-    svg3.selectAll("path.line.gloom")
+    svg4.selectAll("path.line.gloom")
         .data(data)   
         .enter()
         .append("text")
@@ -1223,7 +1225,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         })        
         
     /* Terraforming Mars */
-    svg3.append("path")
+    svg4.append("path")
     .datum(data)  
     .attr("class", "line mars")  
     .attr("d", terraformingMarsLine) 
@@ -1231,7 +1233,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         return color("Terraforming Mars");
     }); 
 
-    svg3.append("text")
+    svg4.append("text")
     .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].terraformingMarsCount) + ")")
     .attr("dy", ".35em")
     .attr("text-anchor", "start")
@@ -1240,7 +1242,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         })
     .text("Terraforming Mars");
     
-    svg3.selectAll("path.line.mars")
+    svg4.selectAll("path.line.mars")
         .data(data)
         .enter()
         .append("circle") 
@@ -1256,7 +1258,7 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
                 return 0;
             }
         })
-    svg3.selectAll("path.line.mars")
+    svg4.selectAll("path.line.mars")
         .data(data)   
         .enter()
         .append("text")
@@ -1271,27 +1273,27 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
                 return "";
             }
         })   
-    svg3.append("circle")
+    svg4.append("circle")
         .attr("cx", width - 3 * padding.right)
         .attr("cy", height - 3 * padding.bottom)
         .attr("r", 20)
         .attr("fill", "black")
 
-    svg3.append("text")
+    svg4.append("text")
         .attr("x", width - 3 * padding.right)
         .attr("y", height - 3 * padding.bottom + 3)
         .text("rank")
         .attr("text-anchor", "middle")
         .style("fill", "white")
 
-    svg3.append("text")
+    svg4.append("text")
         .attr("x", width - 3 * padding.right)
         .attr("y", height - 2 * padding.bottom + 3)
         .text("BoardGameGeek Rank")
         .attr("text-anchor", "middle")
         .style("fill", "black")
 
-    svg3.append("text")
+    svg4.append("text")
         .attr("x", width - 3 * padding.right)
         .attr("y", height - 10)
         .text("chuang424")

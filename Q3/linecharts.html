@@ -2,11 +2,12 @@
 <meta charset="utf-8">
 
 <style type="text/css">
-    .line {
+    path.line {
         fill: none;
-        stroke: #ffab00;
+        /* stroke: #ffab00; */
         stroke-width: 3;
     }
+
     text {  /* This will also set the text on axis */
         font: 12px sans-serif;
     }
@@ -316,12 +317,13 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
             .attr("width", width)
             .attr("height", height)
 
+    // Deal with axis
     svg2.append("g")
        .attr("class", "axis")
        .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
        .call(xAxis);
        
-       svg2.append("g")
+    svg2.append("g")
        .attr("class", "axis")
        .attr("transform", "translate(" + 2 * padding.left + ",0)")
        .call(yAxis);
@@ -343,21 +345,93 @@ d3.dsv(",", "boardgame_ratings.csv", function(d){
         .attr("x", (width / 2) - 6 * padding.right)
         .attr("y", padding.top)
         .attr("class", "title")
-        .text("Number of Ratings 2016-2020 with Rankings") 
-
-    // height = height + tmp
-    // svg.append("g")
-    //    .attr("class", "axis")
-    //    .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
-    //    .call(xAxis);
-
-    // height = height + tmp
-    // svg.append("g")
-    //    .attr("class", "axis")
-    //    .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
-    //    .call(xAxis);
+        .text("Number of Ratings 2016-2020 with Rankings")
     
+    // Start drawing
+    svg2.append("path")
+        .datum(data) // Binds data to the line 
+        .attr("class", "line catan") // Assign a class for styling 
+        .attr("d", catanLine) // Calls the line generator
+        .style("stroke", function(d){
+            return color("Catan");
+        }); 
 
+    svg2.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].catanCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Catan");
+        })
+    .text("Catan");
+
+    svg2.selectAll("path.line.catan")
+        .data(data)
+        .enter()
+        .append("circle") 
+        .attr("fill",function(d){
+            return color("Catan");
+        }) 
+        .attr("cx", function(d) { return xScale(d.date) })
+        .attr("cy", function(d) { return yScale(d.catanCount) })
+        .attr("r", function(d, i){
+            if (i % 3 == 2){
+                return 13;
+            } else {
+                return 0;
+            }
+        })
+    
+    svg2.selectAll("path.line.catan")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("x", function(d) { return xScale(d.date) })
+        .attr("y", function(d) { return yScale(d.catanCount) + 3 })
+        .attr("text-anchor", "middle")
+        .style("fill", "white")
+        .text(function(d, i) {
+			if (i % 3 == 2){
+                return d.catanRank;
+            } else {
+                return "";
+            }
+		})    
+
+    /* codenames */
+    svg2.append("path")
+    .datum(data)  
+    .attr("class", "line code")  
+    .attr("d", codenamesLine) 
+    .style("stroke", function(d){
+        return color("Codenames");
+    }); 
+
+    svg2.append("text")
+    .attr("transform", "translate(" + (width - padding.right * 4 + 10) + "," + yScale(data[dataLen - 1].codenamesCount) + ")")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start")
+    .style("fill", function(d){
+            return color("Codenames");
+        })
+    .text("Codenames");
+    
+    svg2.selectAll("path.line.code")
+        .data(data)
+        .enter()
+        .append("circle") 
+        .attr("fill",function(d){
+            return color("Codenames");
+        }) 
+        .attr("cx", function(d) { return xScale(d.date) })
+        .attr("cy", function(d) { return yScale(d.codenamesCount) })
+        .attr("r", function(d, i){
+            if (i % 3 == 2){
+                return 13;
+            } else {
+                return 0;
+            }
+        })
 
 }).catch(function(error) {
     console.log(error);

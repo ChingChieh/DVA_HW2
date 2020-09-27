@@ -16,6 +16,7 @@
     body {
       height: 1200px;
     }
+ 
   </style>
   <script type="text/javascript" src="../lib/d3.v5.min.js"></script>
   <script type="text/javascript" src="../lib/d3-dsv.min.js"></script>
@@ -211,7 +212,8 @@
         .attr("r", function(d, i){
           return myRadius;
         })
-
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);
     svg1.append("path")
         .datum(data2015_2019[1]) 
         .attr("class", "sixteen") 
@@ -231,7 +233,8 @@
         .attr("r", function(d, i){
           return myRadius;
         })
-
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);  
     svg1.append("path")
         .datum(data2015_2019[2]) 
         .attr("class", "seventeen") 
@@ -251,6 +254,8 @@
         .attr("r", function(d, i){
           return myRadius;
         }) 
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);
     svg1.append("path")
         .datum(data2015_2019[3]) 
         .attr("class", "eighteen") 
@@ -269,7 +274,9 @@
         .attr("cy", function(d) { return yScale(d.count) })
         .attr("r", function(d, i){
           return myRadius;
-        }) 
+        })
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);
     svg1.append("path")
         .datum(data2015_2019[4]) 
         .attr("class", "nineteen") 
@@ -304,21 +311,34 @@
                     .append("svg")
                     .attr("width", width)
                     .attr("height", height);
-        /*======================================== Add title here =============================================*/        
+        /*======================================== Add title and label =============================================*/        
         barChart.append("text")  
           .attr("x", (width / 2))
           .attr("y", 24)
           .attr("class", "title")
           .attr("text-anchor", "middle")
           .text("Top 5 Most Rated Games of " + d.year + " with Rating " + d.rating)   
-        /*========================================= Get top 5 game information ==================================*/
+        barChart.append("text")             
+          .attr("transform", "translate(" + (width/2) + "," + (height - padding.bottom / 2) + ")")
+          .attr("class", "label")
+          .attr("text-anchor", "middle")
+          .text("Number of users");
+        barChart.append("text")             
+          .attr("transform", "rotate(-90)")
+          .attr("y", padding.left / 2 - 20)
+          .attr("x",0 - (height / 2) - 50)  
+          .attr("class", "label")
+          .text("Games");
+        /*========================================= start drawing bar chart ==================================*/
         // barData is ready
         var dataset = barData[d.year.toString()][d.rating.toString()];
+        var col = d.year;
         var totalGame = 5;
         if (dataset.length < totalGame){
           totalGame = dataset.length;
         } 
         dataset = dataset.slice(0, totalGame);
+        dataset = dataset.reverse();
         var xBar = d3.scaleLinear()
                     .range([padding.left, width - padding.right])
                     .domain([0, d3.max(dataset, function(d){ return d.numOfUser})]);  // Not sure hard-coding the domain min is ok or not   
@@ -334,10 +354,6 @@
                 .attr("class", "axis")
                 .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
                 .call(xBarAxis);
-        barChart.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(" + 1 * padding.left + ",0)")
-                .call(yBarAxis);
 
         console.log(xBar.domain(), xBar.range())
         console.log(dataset)
@@ -347,9 +363,18 @@
                 .enter()
                 .append("rect")
                 .attr("width", function(d) {return xBar(d.numOfUser) - padding.left;})
-                .attr("height", 30)
-                .attr("y", function(d) {return yBar(d.name.slice(0, 10)) + 15;})
+                .attr("height", (height - padding.top - padding.bottom) / totalGame - 20)
+                .attr("y", function(d) {return yBar(d.name.slice(0, 10)) + 10;})
                 .attr("x", padding.left)
+                .attr("fill", function(d){
+                  return color(col);
+                })
+
+        barChart.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(" + 1 * padding.left + ",0)")
+                .call(yBarAxis);
+        
 
 
       }

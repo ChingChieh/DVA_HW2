@@ -20,6 +20,7 @@
 
 <body>
 <div id="container1"></div>
+<div id="container2"></div>
 <script>
   d3.dsv(",", "average-rating.csv", function(d){
     return {
@@ -39,6 +40,13 @@
       "2018":{},
       "2019":{}
     }; 
+    var barData = {
+      "2015":{},
+      "2016":{},
+      "2017":{},
+      "2018":{},
+      "2019":{}
+    }
     var i, j;
     var xMin = d3.min(data, function(d){ return d.floorRate;}),
         xMax = d3.max(data, function(d){ return d.floorRate;});
@@ -46,8 +54,18 @@
     for(i = 2015; i < 2020; i++){
       for(j = xMin; j < xMax + 1; j++){
         years[i.toString()][j.toString()] = 0;
+        barData[i.toString()][j.toString()] = [];
       }
     }
+
+    // 1.1 create data for bar chart
+    function compare(a, b) {
+      return b.userRated - a.userRated;
+    }
+
+
+
+
 
     // 2. store count in years object
     data.forEach(function(d){
@@ -61,12 +79,12 @@
     // 3.1 set basic svg size
     var padding = {top: 100, right: 100, bottom: 100, left: 100};
     var width = 1200;
-    var height = 800;
+    var height = 500;
     var svg1 = d3.select("#container1")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height)
-
+    var barChart; // For interactive purpose!
     // 3.2 set xScale and yScale
     var xScale = d3.scaleLinear()
                   .range([padding.left, width - padding.right])
@@ -149,7 +167,8 @@
         tmpArray.push(
           {
             rating: j,
-            count:years[i.toString()][j.toString()]
+            count:years[i.toString()][j.toString()],
+            year: i
           }
         )
       }
@@ -163,7 +182,7 @@
     var myYearRange = ["2015", "2016", "2017", "2018", "2019"];
     var color = d3.scaleOrdinal(myColorScheme)
                   .domain(myYearRange);
-    var myRadius = 3;
+    var myRadius = 6;
 
     svg1.append("path")
         .datum(data2015_2019[0]) 
@@ -262,6 +281,45 @@
         .attr("r", function(d, i){
           return myRadius;
         }) 
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);
+
+    function mouseOver(d){
+      console.log(d.year, d.rating)
+      d3.select(this)
+        .attr("r", function(d, i){
+          return 10;
+        }); 
+      /*======================================== Create barchart here =======================================*/
+      barChart = d3.select("#container2")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height);
+      barChart.append("circle")
+              .attr("cx", width / 2)
+              .attr("cy", height / 2)
+              .attr("r", 30)
+              .attr("fill", "black");
+      /*======================================== Add title here =============================================*/        
+      barChart.append("text")  
+        .attr("x", (width / 2))
+        .attr("y", padding.top / 2)
+        .attr("class", "title")
+        .attr("text-anchor", "middle")
+        .text("Top 5 Most Rated Games of " + d.year + " with Rating " + d.rating)   
+      /*========================================= Get top 5 game information ==================================*/
+
+
+
+      
+    }
+    function mouseOut(d){
+      d3.select(this)
+        .attr("r", function(d, i){
+          return myRadius;
+        }) 
+      barChart.remove();
+    }
     // Add ledgend
     let legendX = width - padding.right;
     let legendY = padding.top;

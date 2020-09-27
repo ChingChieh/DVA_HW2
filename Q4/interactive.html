@@ -9,12 +9,9 @@
     text.title{
       font: 30px sans-serif;
     }
-    path.line {
+    path{
         fill: none;
         stroke-width: 2;
-    }
-    .fifteen {
-      stroke: red;
     }
   </style>
   <script type="text/javascript" src="../lib/d3.v5.min.js"></script>
@@ -126,15 +123,23 @@
     
     svg1.append("text")
         .attr("x", (width / 2))
-        .attr("y", padding.top - 10)
+        .attr("y", padding.top / 2)
         .attr("class", "title")
         .attr("text-anchor", "middle")
         .text("Board games by Rating 2015-2019") 
+
+    svg1.append("text")
+        .attr("x", (width / 2))
+        .attr("y", padding.top)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .style("font-family", "sans-serif")
+        .style("fill", "#335d2d")
+        .text("chuang424") 
     // 3.5 create lines
     var lines = d3.line()
                     .x(function(d, i) { return xScale(d.rating); }) 
                     .y(function(d, i) { return yScale(d.count); })
-    let a = [{b: 0, c:1}, {b: 0, c:2},{b: 1, c:3},{b: 19, c:4},{b: 176, c:5},{b: 524, c:6},{b: 284, c:7},{b: 31, c:8},{b: 0, c:9}];
     
     // 3.6 create data formate that fit
     let data2015_2019 = [];
@@ -158,44 +163,122 @@
     var myYearRange = ["2015", "2016", "2017", "2018", "2019"];
     var color = d3.scaleOrdinal(myColorScheme)
                   .domain(myYearRange);
+    var myRadius = 3;
 
     svg1.append("path")
         .datum(data2015_2019[0]) 
-        .attr("class", "line fifteen") 
+        .attr("class", "fifteen") 
         .attr("d", lines) 
         .style("stroke", function(d){
           return color("2015");
         }); 
-        
+    svg1.selectAll("path.fifteen")
+        .data(data2015_2019[0])
+        .enter()
+        .append("circle") 
+        .attr("fill",function(d){
+            return color("2015");
+        }) 
+        .attr("cx", function(d) { return xScale(d.rating) })
+        .attr("cy", function(d) { return yScale(d.count) })
+        .attr("r", function(d, i){
+          return myRadius;
+        })
+
     svg1.append("path")
         .datum(data2015_2019[1]) 
-        .attr("class", "line sixteen") 
+        .attr("class", "sixteen") 
         .attr("d", lines) 
         .style("stroke", function(d){
           return color("2016");
         }); 
+    svg1.selectAll("path.sixteen")
+        .data(data2015_2019[1])
+        .enter()
+        .append("circle") 
+        .attr("fill",function(d){
+            return color("2016");
+        }) 
+        .attr("cx", function(d) { return xScale(d.rating) })
+        .attr("cy", function(d) { return yScale(d.count) })
+        .attr("r", function(d, i){
+          return myRadius;
+        })
+
     svg1.append("path")
         .datum(data2015_2019[2]) 
-        .attr("class", "line seventeen") 
+        .attr("class", "seventeen") 
         .attr("d", lines) 
         .style("stroke", function(d){
           return color("2017");
-        }); 
+        });
+    svg1.selectAll("path.seventeen")
+        .data(data2015_2019[2])
+        .enter()
+        .append("circle") 
+        .attr("fill",function(d){
+            return color("2017");
+        }) 
+        .attr("cx", function(d) { return xScale(d.rating) })
+        .attr("cy", function(d) { return yScale(d.count) })
+        .attr("r", function(d, i){
+          return myRadius;
+        }) 
     svg1.append("path")
         .datum(data2015_2019[3]) 
-        .attr("class", "line eighteen") 
+        .attr("class", "eighteen") 
         .attr("d", lines) 
         .style("stroke", function(d){
           return color("2018");
-        }); 
+        });
+    svg1.selectAll("path.eighteen")
+        .data(data2015_2019[3])
+        .enter()
+        .append("circle") 
+        .attr("fill",function(d){
+            return color("2018");
+        }) 
+        .attr("cx", function(d) { return xScale(d.rating) })
+        .attr("cy", function(d) { return yScale(d.count) })
+        .attr("r", function(d, i){
+          return myRadius;
+        }) 
     svg1.append("path")
         .datum(data2015_2019[4]) 
-        .attr("class", "line nineteen") 
+        .attr("class", "nineteen") 
         .attr("d", lines) 
         .style("stroke", function(d){
           return color("2019");
-        }); 
-
+        });
+    svg1.selectAll("path.nighteen")
+        .data(data2015_2019[4])
+        .enter()
+        .append("circle") 
+        .attr("fill",function(d){
+            return color("2019");
+        }) 
+        .attr("cx", function(d) { return xScale(d.rating) })
+        .attr("cy", function(d) { return yScale(d.count) })
+        .attr("r", function(d, i){
+          return myRadius;
+        }) 
+    // Add ledgend
+    let legendX = width - padding.right;
+    let legendY = padding.top;
+    
+    for (i = 2015; i < 2020; ++i){
+      svg1.append("circle")
+        .attr("cx", legendX)
+        .attr("cy", legendY + 20 * (i - 2015))
+        .attr("r", 5)
+        .attr("fill", color(i.toString()));
+      svg1.append("text")
+        .attr("x", legendX + 10)
+        .attr("y", legendY + 5 + 20 * (i - 2015))
+        .text(i.toString())
+        .attr("text-anchor", "start")    
+        .style("font-family", "sans-serif")
+    }
 
 
 

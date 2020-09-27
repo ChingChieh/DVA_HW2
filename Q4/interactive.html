@@ -13,6 +13,9 @@
         fill: none;
         stroke-width: 2;
     }
+    body {
+      height: 1200px;
+    }
   </style>
   <script type="text/javascript" src="../lib/d3.v5.min.js"></script>
   <script type="text/javascript" src="../lib/d3-dsv.min.js"></script>
@@ -58,28 +61,33 @@
       }
     }
 
-    // 1.1 create data for bar chart
-    function compare(a, b) {
-      return b.userRated - a.userRated;
-    }
-
-
-
-
-
     // 2. store count in years object
     data.forEach(function(d){
       if (d.year >= 2015 && d.year <= 2019){
         years[d.year.toString()][d.floorRate.toString()] += 1;
+        barData[d.year.toString()][d.floorRate.toString()].push({
+          name: d.name,
+          numOfUser: d.userRated
+        }); 
       }
     });
     console.log(years);
-
+    // 2.1 create data for bar chart
+    function compare(a, b) {
+      return b.numOfUser - a.numOfUser;
+    }
+    for(i = 2015; i < 2020; i++){
+      for(j = xMin; j < xMax + 1; j++){
+        barData[i.toString()][j.toString()].sort(compare);
+      }
+    }
+    console.log(barData);
     // 3. start drawing line chart
     // 3.1 set basic svg size
     var padding = {top: 100, right: 100, bottom: 100, left: 100};
     var width = 1200;
     var height = 500;
+    var totalHeight = 1200;
     var svg1 = d3.select("#container1")
                 .append("svg")
                 .attr("width", width)
@@ -287,38 +295,73 @@
     function mouseOver(d){
       console.log(d.year, d.rating)
       d3.select(this)
-        .attr("r", function(d, i){
-          return 10;
-        }); 
-      /*======================================== Create barchart here =======================================*/
-      barChart = d3.select("#container2")
-                  .append("svg")
-                  .attr("width", width)
-                  .attr("height", height);
-      barChart.append("circle")
-              .attr("cx", width / 2)
-              .attr("cy", height / 2)
-              .attr("r", 30)
-              .attr("fill", "black");
-      /*======================================== Add title here =============================================*/        
-      barChart.append("text")  
-        .attr("x", (width / 2))
-        .attr("y", padding.top / 2)
-        .attr("class", "title")
-        .attr("text-anchor", "middle")
-        .text("Top 5 Most Rated Games of " + d.year + " with Rating " + d.rating)   
-      /*========================================= Get top 5 game information ==================================*/
+      .attr("r", function(d, i){
+        return 10;
+      }); 
+      if (d.count > 0) {
+        /*======================================== Create barchart here =======================================*/
+        barChart = d3.select("#container2")
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+        /*======================================== Add title here =============================================*/        
+        barChart.append("text")  
+          .attr("x", (width / 2))
+          .attr("y", 24)
+          .attr("class", "title")
+          .attr("text-anchor", "middle")
+          .text("Top 5 Most Rated Games of " + d.year + " with Rating " + d.rating)   
+        /*========================================= Get top 5 game information ==================================*/
+        // barData is ready
+        var dataset = barData[d.year.toString()][d.rating.toString()];
+        var totalGame = 5;
+        if (dataset.length < totalGame){
+          totalGame = dataset.length;
+        } 
+        dataset = dataset.slice(0, totalGame);
+        var xBar = d3.scaleLinear()
+                    .range([padding.left, width - padding.right])
+                    .domain([0, d3.max(dataset, function(d){ return d.numOfUser})]);  // Not sure hard-coding the domain min is ok or not   
+         
+        var yBar = d3.scaleBand()
+                    .range([height - padding.top, padding.bottom])
+                    .domain(dataset.map(function(d) { return d.name.slice(0, 10); }));
+        var xBarAxis = d3.axisBottom()
+                        .scale(xBar);
+        var yBarAxis = d3.axisLeft()
+                        .scale(yBar)
+        barChart.append("g")
+                .attr("class", "axis")
+                .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
+                .call(xBarAxis);
+        barChart.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(" + 1 * padding.left + ",0)")
+                .call(yBarAxis);
+
+        console.log(xBar.domain(), xBar.range())
+        console.log(dataset)
+        console.log(yBar.domain(), yBar.range())
+        barChart.selectAll(".bar")
+                .data(dataset)
+                .enter()
+                .append("rect")
+                .attr("width", function(d) {return xBar(d.numOfUser) - padding.left;})
+                .attr("height", 30)
+                .attr("y", function(d) {return yBar(d.name.slice(0, 10)) + 15;})
+                .attr("x", padding.left)
 
 
-
-      
+      }
     }
     function mouseOut(d){
       d3.select(this)
         .attr("r", function(d, i){
           return myRadius;
         }) 
-      barChart.remove();
+      if (d.count > 0) {
+        barChart.remove();
+      }
     }
     // Add ledgend
     let legendX = width - padding.right;

@@ -16,6 +16,10 @@
     body {
       height: 1200px;
     }
+    .grid line{
+      stroke: lightgrey;
+      stroke-opacity: 0.7;
+    }
  
   </style>
   <script type="text/javascript" src="../lib/d3.v5.min.js"></script>
@@ -342,18 +346,30 @@
         var xBar = d3.scaleLinear()
                     .range([padding.left, width - padding.right])
                     .domain([0, d3.max(dataset, function(d){ return d.numOfUser})]);  // Not sure hard-coding the domain min is ok or not   
-         
+                  
         var yBar = d3.scaleBand()
                     .range([height - padding.top, padding.bottom])
                     .domain(dataset.map(function(d) { return d.name.slice(0, 10); }));
         var xBarAxis = d3.axisBottom()
-                        .scale(xBar);
+                        .scale(xBar)
+
         var yBarAxis = d3.axisLeft()
-                        .scale(yBar)
+                        .scale(yBar);
         barChart.append("g")
                 .attr("class", "axis")
                 .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
                 .call(xBarAxis);
+                
+        var xBarGrid = d3.axisBottom()
+                        .scale(xBar)
+                        .tickFormat("")
+                        .ticks(10)
+                        .tickSize(-height + 2 * padding.bottom);
+        barChart.append("g")			
+                .attr("class", "grid")
+                .attr("transform","translate(" + 0 + "," + (height - padding.bottom) + ")")
+                .call(xBarGrid)
+
 
         console.log(xBar.domain(), xBar.range())
         console.log(dataset)

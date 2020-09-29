@@ -154,6 +154,7 @@
             var maxRate = 0;
             var dataset = [];
             var level1,level2, level3; 
+            var color = ["#FFFEAA", "#D4D46A", "#807F15", "#555400"];
             for (const [key, value] of Object.entries(gameTable[selectedGame])) {
                 if (value.avgRating < minRate){
                     minRate = value.avgRating;
@@ -166,23 +167,48 @@
             console.log(minRate, maxRate);
             quantile = d3.scaleQuantile()
                         .domain(dataset) // pass the whole dataset to a scaleQuantile’s domain
-                        .range(["green", "pink", "red", "black"])
+                        .range(color)
+            var split = quantile.quantiles();
             console.log(quantile.domain())
-            var color = ["#f6f5f5", "#145374", "#00334e", "#ee6f57"];
             svg.selectAll("path")
                 .data(world.features)
                 .enter()
                 .append("path")
+                .attr("stroke", "#333333")
                 .attr("d", path)
                 .attr("fill", function(d, i){
                     var result = gameTable[selectedGame][d.properties.name];
                     // Will need d.properties.name to get country name
                     if (result == undefined){
-                        return "#cccccc";
+                        return "gray";
                     }
                     return quantile(gameTable[selectedGame][d.properties.name].avgRating);
-                        // return "#cccccc";
                 })
+            let list = [minRate, split[0], split[1], split[2], maxRate];
+            let format = d3.format(",.2f")
+            for (var j = 0; j < 4; j++){
+                svg.append("rect")
+                .attr("fill", color[j])
+                .attr("x", width - 1.5 * padding.right)
+				.attr("y", padding.top + 30 * j)
+				.attr("width", 20)
+                .attr("height", 20); 
+                svg.append("text")
+                .attr("x", width - 1.5 * padding.right + 30)
+                .attr("y", padding.top + 30 * j + 15)
+                .attr("text-anchor", "start")    
+                .style("font-family", "sans-serif")
+                .text(function(d){
+                    return format(list[j]) + " to " + format(list[j + 1]);
+                })
+            }
+            svg.append("text")
+                .attr("x", width - 1.5 * padding.right + 30)
+                .attr("y", height - padding.bottom)
+                .attr("text-anchor", "start")    
+                .style("font-family", "sans-serif")
+                .text("chuang424")
+            
 			
         }
     </script>

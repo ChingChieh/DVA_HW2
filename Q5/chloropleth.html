@@ -12,9 +12,18 @@
 
 	<style type="text/css">
 		/* <!-- define CSS rules here --> */
-        svg{
+        /* svg{
             background: #cccccc;
-        }       
+        }        */
+        .d3-tip {
+            line-height: 1;
+            font-weight: bold;
+            font: 16px sans-serif;
+            padding: 12px;
+            background: rgba(85, 164, 118, 0.8);
+            color: #fff;
+            border-radius: 5px;
+        }
 	</style>
 </head>
 
@@ -39,10 +48,15 @@
                 .attr("width", width)
                 .attr("height", height)
 
-		// enter code to create color scale
-		
+        // enter code to create color scale
+        var color = ["#FFFEAA", "#D4D46A", "#807F15", "#555400"];
+		var quantile = d3.scaleQuantile()
+                        .range(color)
 		// enter code to define tooltip
-        
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            
 		// enter code to define projection and path required for Choropleth
         var projection = d3.geoNaturalEarth()
                         .translate([width / 2, height / 2]);
@@ -154,7 +168,7 @@
             var maxRate = 0;
             var dataset = [];
             var level1,level2, level3; 
-            var color = ["#FFFEAA", "#D4D46A", "#807F15", "#555400"];
+            
             for (const [key, value] of Object.entries(gameTable[selectedGame])) {
                 if (value.avgRating < minRate){
                     minRate = value.avgRating;
@@ -165,9 +179,7 @@
                 dataset.push(value.avgRating);
             }
             console.log(minRate, maxRate);
-            quantile = d3.scaleQuantile()
-                        .domain(dataset) // pass the whole dataset to a scaleQuantile’s domain
-                        .range(color)
+            quantile.domain(dataset); 
             var split = quantile.quantiles();
             console.log(quantile.domain())
             svg.selectAll("path")
@@ -184,8 +196,17 @@
                     }
                     return quantile(gameTable[selectedGame][d.properties.name].avgRating);
                 })
-                .on("mouseover", mouseOver)
-                .on("mouseout", mouseOut);
+                .on("mouseover", tip.show)
+                .on("mouseout", tip.hide)
+                .call(tip);
+
+            tip.html(function(d) {
+                if(gameTable[selectedGame][d.properties.name] != undefined){
+                    return "Country: "+ d.properties.name +"<br/> Game: " + selectedGame + "<br/> Avg Rating: " + gameTable[selectedGame][d.properties.name].avgRating + "<br/> Number of Users: " + gameTable[selectedGame][d.properties.name].numOfUsers;
+                } else {
+                    return "Country: "+ d.properties.name +"<br/> Game: " + selectedGame + "<br/> Avg Rating: No data" + "<br/> Number of Users: No data";    
+                }
+            })    
 
             let list = [minRate, split[0], split[1], split[2], maxRate];
             let format = d3.format(",.2f")

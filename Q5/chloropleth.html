@@ -7,7 +7,7 @@
     <script type="text/javascript" src="/lib/d3.v5.min.js"></script>
     <script type="text/javascript" src="/lib/d3-geo-projection.v2.min.js"></script>
     <script type="text/javascript" src="/lib/d3-legend.min.js"></script>
-    <script type="text/javascript" src="/lib/d3-tip.min.js"></script>
+    <!-- <script type="text/javascript" src="/lib/d3-tip.min.js"></script> -->
     <script type="text/javascript" src="/lib/topojson.v2.min.js"></script>
 
 	<style type="text/css">
@@ -29,8 +29,6 @@
     <div id="choropleth"></div>
 
     <script>
-
-
 		// enter code to define margin and dimensions for svg
 		var padding = {top: 100, right: 100, bottom: 100, left: 100};
         var width = 1200;
@@ -51,7 +49,8 @@
             
         var path = d3.geoPath()  // Line generator
                     .projection(projection)
-		// define any other global variables 
+        // define any other global variables 
+        var gameTable = {};
         Promise.all([
             // enter code to read files
             d3.json("world_countries.json"),
@@ -62,10 +61,8 @@
                     numOfUsers: +d["Number of Users"],
                     avgRating: +d["Average Rating"],
                 }
-                
             })
         ]).then(
-            
             // enter code to call ready() with required arguments
 			data => {
                 console.log(data);
@@ -96,6 +93,30 @@
                 return 0;
             }
             gameSet.sort(compare);
+            // ================================ build my table for each game ==========================================//
+            var countryList = [];
+            world.features.forEach(function(d){
+                countryList.push(d.properties.name);
+            });
+            console.log(countryList.length);
+            
+            var i;
+            var len = gameData.length;
+            gameSet.forEach(function(d){
+                gameTable[d] = {};
+            });
+            console.log(gameTable);
+            gameData.forEach(function(d){
+                var tmpData = {
+                    numOfUsers: d.numOfUsers,
+                    avgRating: d.avgRating
+                }
+                gameTable[d.game][d.country] = tmpData;
+            })
+            console.log(gameTable);
+
+
+
             // enter code to append the game options to the dropdown
             var dropDown = document.getElementById("game");
             let options = document.createDocumentFragment();
@@ -111,25 +132,57 @@
             dropDown.addEventListener("click", function(d){
                 let val = d.target.text;
                 if (val !== undefined){
-                    console.log(val);
                     selectedGame = val;
-                }
-               
-            });
-            // create Choropleth with default option. Call createMapAndLegend() with required arguments. 
-            
+                    console.log(selectedGame);
+                    svg.remove();
+                    svg = d3.select("#choropleth")
+                            .append("svg")
+                            .attr("width", width)
+                            .attr("height", height)
 
-            svg.selectAll("path")
-                .data(world.features)
-                .enter()
-                .append("path")
-                .attr("d", path)
+                    createMapAndLegend(world, gameData, selectedGame);
+                }
+            });
+            // create Choropleth with default option. Call createMapAndLegend() with required arguments.  
+            createMapAndLegend(world, gameData, selectedGame);
         }
 
 		// this function should create a Choropleth and legend using the world and gameData arguments for a selectedGame
 		// also use this function to update Choropleth and legend when a different game is selected from the dropdown
         function createMapAndLegend(world, gameData, selectedGame){ 
-		
+            var minRate = 10;
+            var maxRate = 0;
+            var dataset = [];
+            var level1,level2, level3; 
+            for (const [key, value] of Object.entries(gameTable[selectedGame])) {
+                if (value.avgRating < minRate){
+                    minRate = value.avgRating;
+                }
+                if (value.avgRating > maxRate){
+                    maxRate = value.avgRating;
+                }
+                dataset.push(value.avgRating);
+            }
+            console.log(minRate, maxRate);
+            quantile = d3.scaleQuantile()
+                        .domain(dataset) // pass the whole dataset to a scaleQuantile’s domain
+                        .range(["green", "pink", "red", "black"])
+            console.log(quantile.domain())
+            var color = ["#f6f5f5", "#145374", "#00334e", "#ee6f57"];
+            svg.selectAll("path")
+                .data(world.features)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .attr("fill", function(d, i){
+                    var result = gameTable[selectedGame][d.properties.name];
+                    // Will need d.properties.name to get country name
+                    if (result == undefined){
+                        return "#cccccc";
+                    }
+                    return quantile(gameTable[selectedGame][d.properties.name].avgRating);
+                        // return "#cccccc";
+                })
 			
         }
     </script>

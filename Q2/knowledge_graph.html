@@ -3,7 +3,7 @@
 <script type="text/javascript" src="../lib/d3.v5.min.js"></script>
 <style>
 
-path.link1 {
+path{
   fill: none;
   stroke: rgb(89, 128, 34);
   stroke-width: 1.5px;
@@ -59,12 +59,14 @@ d3.json("triples_sentence_1026.json", function(d){
     var links = [];
     var nodes = {};
     data.forEach(element => {
-        link = {};
-        link["source"] = nodes[element[0][0]] || (nodes[element[0][0]] = {"name" : element[0][0]});
-        link["relation"] = element[0][1];   // might need to modify how to store the "relation" and "text" data
-        link["target"] = nodes[element[0][2]] || (nodes[element[0][2]] = {"name" : element[0][2]});
-        link["text"] = element[1];
-        links.push(link);
+        link1 = {};
+        link2 = {};
+        link1["source"] = nodes[element[0][0]] || (nodes[element[0][0]] = {"name" : element[0][0]});
+        link1["target"] = nodes[element[0][1]] || (nodes[element[0][1]] = {"name" : element[0][1]});
+        link2["source"] = nodes[element[0][1]] || (nodes[element[0][1]] = {"name" : element[0][1]});
+        link2["target"] = nodes[element[0][2]] || (nodes[element[0][2]] = {"name" : element[0][2]});
+        links.push(link1);
+        links.push(link2);
     });    
     console.log(links);
     console.log(nodes);

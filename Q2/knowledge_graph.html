@@ -45,8 +45,8 @@ circle.level3{
   fill: #065c6f;
 }
 circle.fixed{
-  stroke: red;
-  stroke-width: 3px;
+  stroke: #FFFF00;
+  stroke-width: 5px;
 }
 
 text {
@@ -178,27 +178,26 @@ d3.json("triples_sentence.json", function(d){
             .on("end", dragended))
         
 
-    var scaleArray = [];   // Store the count of neighbor for every node
-    links.forEach(function(link) {
-    var len = links.filter(function(l) {
-        return l.source.index == link.index || l.target.index == link.index
-    });
-        scaleArray.push(len.length)  
-    });
+    // var scaleArray = [];   // Store the count of neighbor for every node
+    // links.forEach(function(link) {
+    // var len = links.filter(function(l) {
+    //     return l.source.index == link.index || l.target.index == link.index
+    // });
+    //     scaleArray.push(len.length)  
+    // });
 
-    rScale.domain([d3.min(scaleArray), d3.max(scaleArray)]);
+    // rScale.domain([d3.min(scaleArray), d3.max(scaleArray)]);
 
     // add the nodes
     node.append("circle")
         .attr("r", function(d, i){
-            d.weight = links.filter(function(l) {
-                return l.source.index == d.index || l.target.index == d.index
-            });
-            d.weight = d.weight.length
-
+            // d.weight = links.filter(function(l) {
+            //     return l.source.index == d.index || l.target.index == d.index
+            // });
+            // d.weight = d.weight.length
             return 10;
         })
-        .attr("class", function(d) {
+        .attr("class", function(d) { // Assign color for "object", "relation", "subject"
             var level; 
             if (d["type"] == "object"){
                 level = 1;
@@ -217,7 +216,6 @@ d3.json("triples_sentence.json", function(d){
         .text(function(d) {
             return d["name"]
             })  
-    var i = 0;
     // add the curvy lines
     function tick() {
         path.attr("d", function(d) {
@@ -225,6 +223,7 @@ d3.json("triples_sentence.json", function(d){
             var dx = d.target.x - d.source.x,
                 dy = d.target.y - d.source.y,
                 dr = Math.sqrt(dx * dx + dy * dy);
+            // Comment the code that will show the curvy line
             // line = "M" +
             //     d.source.x + "," +
             //     d.source.y + "A" +
@@ -233,10 +232,6 @@ d3.json("triples_sentence.json", function(d){
             //     d.target.y;
             line = "M" + d.source.x + "," + d.source.y +  
                     "L" + d.target.x + "," + d.target.y;
-            if (i == 0){
-                console.log(line);
-                i++;
-            }
             
             return line;
         });
@@ -293,10 +288,6 @@ d3.json("triples_sentence.json", function(d){
 }).catch((err) => {
     console.log(err);
 });
-
-
-
-
 </script>
 </body>
 </html>
